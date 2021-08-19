@@ -1,4 +1,10 @@
-from flask import Flask
+from flask import Flask, request, session, g, redirect, abort, render_template
+import sqlite3
+
+
+DATABASE="blog.db"
+SECRET_KEY='pudim'
+
 
 app = Flask(__name__)
 
