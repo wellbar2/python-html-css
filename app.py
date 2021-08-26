@@ -32,7 +32,7 @@ def exibir_entradas():
         entradas.append({'titulo':titulo, 'texto':texto})
     return render_template('exibir_entradas.html', entradas=entradas)
 
-@app.route('/inserir')
+@app.route('/inserir', methods=['POST'])
 def inserir_entrada():
     if not session.get('logado'):
         abort(401)
@@ -52,7 +52,7 @@ def logout():
 def login():
     erro = None
     if request.method == 'POST':
-        if request.form['campoUsuario'] != 'admin' or request.form['campoSenha'] == 'admin':
+        if request.form['campoUsuario'] != 'admin' or request.form['campoSenha'] != 'admin':
             erro = 'Senha ou usuário inválidos'
         else:
             session['logado'] = True
