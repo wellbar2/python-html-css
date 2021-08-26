@@ -1,4 +1,4 @@
-from flask import Flask, request, session, g, redirect, abort, render_template
+from flask import Flask, url_for, request, session, g, redirect, abort, render_template
 import sqlite3
 
 
@@ -30,7 +30,14 @@ def exibir_entradas():
     entradas = []
     for titulo, texto in cur.fetchall():
         entradas.append({'titulo':titulo, 'texto':texto})
-    render_template('exibir_entradas.html', entradas=entradas)
+    return render_template('exibir_entradas.html', entradas=entradas)
+
+@app.route('/inserir')
+def inserir_entrada():
+    sql = 'INSERT INTO entradas(titulo,texto) VALUES ("Quarto post","Esse é o post 4")'
+    g.bd.execute(sql)
+    g.bd.commit()
+    return redirect(url_for('exibir_entradas'))
 
 @app.route('/hello')
 def pagina_inicial():
