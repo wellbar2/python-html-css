@@ -23,8 +23,14 @@ def depois_requisicao(exc):
 
 
 @app.route('/')
+@app.route('/entradas')
 def exibir_entradas():
-    return "<h1>Aqui estarão as postagens</h1>"
+    sql = "SELECT titulo, texto FROM entradas ORDER BY id DESC"
+    cur = g.bd.execute(sql)
+    entradas = []
+    for titulo, texto in cur.fetchall():
+        entradas.append({'titulo':titulo, 'texto':texto})
+    render_template('exibir_entradas.html', entradas=entradas)
 
 @app.route('/hello')
 def pagina_inicial():
