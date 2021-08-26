@@ -34,10 +34,33 @@ def exibir_entradas():
 
 @app.route('/inserir')
 def inserir_entrada():
-    sql = 'INSERT INTO entradas(titulo,texto) VALUES ("Quarto post","Esse é o post 4")'
-    g.bd.execute(sql)
+    if not session.get('logado'):
+        abort(401)
+    sql = 'INSERT INTO entradas(titulo,texto) VALUES (?,?)'
+    g.bd.execute(sql, request.form['campoTitulo'], request.form['campoTexto'])
     g.bd.commit()
     return redirect(url_for('exibir_entradas'))
+
+
+@app.route('/lougout')
+def logout():
+    session.pop('logado',None)
+    return redirect(url_for('exibir_entradas'))
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    erro = None
+    if request.method == 'POST':
+        if request.form['campoUsuario'] != 'admin' or request.form['campoSenha'] == 'admin':
+            erro = 'Senha ou usuário inválidos'
+        else:
+            session['logado'] = True
+            return render_template(url_for('exibir_entradas'))
+
+    return render_template('login.html', erro=erro)
+
+
 
 @app.route('/hello')
 def pagina_inicial():
